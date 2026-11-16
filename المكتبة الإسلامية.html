@@ -1,0 +1,646 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>المكتبة الإسلامية</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#173B33">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Readex+Pro:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: one view at a time (hash routed) — home (verse, continue, search, Quran, Nahj, two libraries), library door grids, section lists, Quran, my library; fixed Quran player */
+:root{
+  --bg:#EDF1EE; --surface:#F8FAF8; --sunk:#E2E9E4; --line:#CBD6CF; --soft:#F4EEDF;
+  --ink:#13302A; --muted:#55706A; --accent:#9C7426; --accent-ink:#FFF8EA; --accent-text:#7A5A1C; --deep:#173B33; --on-deep:#EAF1ED; --on-deep-2:#B9CBC4; --gold:#D8AA4E;
+  --display:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;
+  --body:"Readex Pro","Segoe UI","Tahoma",system-ui,sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1916; --surface:#13221E; --sunk:#0A1411; --line:#25392F; --soft:#2A2615;
+  --ink:#E4ECE8; --muted:#93AAA2; --accent:#D8AA4E; --accent-ink:#1B1406; --accent-text:#E3BE72; --deep:#0A1714; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1916; --surface:#13221E; --sunk:#0A1411; --line:#25392F; --soft:#2A2615;
+  --ink:#E4ECE8; --muted:#93AAA2; --accent:#D8AA4E; --accent-ink:#1B1406; --accent-text:#E3BE72; --deep:#0A1714; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--deep)}
+.wrap{max-width:960px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent-text)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ico{width:18px;height:18px;flex:none}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--deep);color:var(--on-deep)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-block:8px}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;color:inherit;padding:6px 0}
+.brand svg{width:28px;height:28px;color:var(--gold)}
+.brand b{font-family:var(--display);font-size:1.4rem;font-weight:700}
+.top-actions{display:flex;gap:4px}
+.top-btn{min-width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:none;border:0;color:var(--on-deep);border-radius:10px;padding:0 10px;font-size:.85rem}
+.top-btn:hover{background:rgba(255,255,255,.08)}
+
+.vhead{background:var(--deep);color:var(--on-deep)}
+.vhead .wrap{padding-block:4px 20px}
+.back{display:inline-flex;align-items:center;gap:6px;height:44px;background:none;border:0;color:var(--gold);padding:0;font-size:.9rem}
+.vhead .eyebrow{font-size:.78rem;color:var(--on-deep-2)}
+.vhead h1{margin:0;font-family:var(--display);font-size:clamp(1.9rem,6vw,2.4rem);line-height:1.3;text-wrap:balance}
+.vhead p{margin:2px 0 0;font-size:.85rem;color:var(--on-deep-2)}
+
+main{padding-bottom:150px}
+.view{display:grid;gap:18px;padding-block:18px}
+.view>*{min-width:0}
+.label{font-size:.78rem;color:var(--muted);letter-spacing:.02em;margin:0}
+
+.hero{background:var(--deep);color:var(--on-deep);position:relative;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.15;pointer-events:none}
+.hero .wrap{position:relative;padding-block:22px 26px;display:grid;gap:10px;text-align:center}
+.verse{font-family:var(--display);font-size:clamp(1.6rem,5.6vw,2.6rem);line-height:1.6;margin:0 auto;max-width:26ch;text-wrap:balance}
+.verse .orn{color:var(--gold);font-size:.8em}
+.verse-ref{display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;font-size:.8rem;color:var(--gold)}
+.verse-ref button{background:none;border:1px solid rgba(216,170,78,.45);color:var(--gold);border-radius:999px;height:32px;padding:0 12px;font-size:.78rem;display:inline-flex;align-items:center;gap:6px}
+
+.search{position:relative;display:block}
+.search input{width:100%;height:50px;padding:0 44px 0 14px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit}
+.search svg{position:absolute;right:14px;top:50%;translate:0 -50%;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:.85rem}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.big-card{display:flex;align-items:center;gap:16px;width:100%;text-align:start;background:var(--deep);color:var(--on-deep);border:0;border-radius:16px;padding:18px 20px}
+.big-card svg.star{width:54px;height:54px;color:var(--gold);flex:none}
+.big-card .t{font-family:var(--display);font-size:1.9rem;line-height:1.25}
+.big-card .d{font-size:.8rem;color:var(--on-deep-2)}
+.big-card .go,.nahj-card .go{margin-inline-start:auto;font-size:.85rem;white-space:nowrap}
+.big-card .go{color:var(--gold)}
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.lib-card{display:grid;gap:4px;align-content:start;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;color:var(--ink)}
+.lib-card:hover,.door:hover,.nahj-card:hover{border-color:var(--accent)}
+.lib-card svg{width:28px;height:28px;color:var(--accent)}
+.lib-card .t{font-family:var(--display);font-size:1.4rem;line-height:1.3}
+.lib-card .d{font-size:.78rem;color:var(--muted)}
+.nahj-card{display:flex;align-items:center;gap:14px;width:100%;text-align:start;background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:16px 18px;color:var(--ink)}
+.nahj-card .t{font-family:var(--display);font-size:1.6rem;line-height:1.25}
+.nahj-card .d{font-size:.8rem;color:var(--muted)}
+.nahj-card .go{color:var(--accent-text)}
+
+.cont{display:grid;gap:8px}
+.cont-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;min-width:0}
+.cont-row .x{flex:1;min-width:0}
+.cont-row .t{font-size:.92rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cont-row .s{font-size:.75rem;color:var(--muted)}
+.tag{font-size:.68rem;border-radius:4px;padding:1px 6px;white-space:nowrap}
+.tag.q{background:var(--deep);color:var(--gold)}
+.tag.a{background:var(--soft);color:var(--accent-text)}
+.tag.r{background:var(--sunk);color:var(--ink)}
+
+.doors{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.door{display:grid;gap:2px;align-content:start;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--ink);min-height:96px}
+.door .t{font-family:var(--display);font-size:1.25rem;line-height:1.3}
+.door .d{font-size:.74rem;color:var(--muted)}
+.door .c{font-size:.72rem;color:var(--accent-text);margin-top:auto}
+
+.items{display:grid;gap:10px}
+.item{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}
+.item .x{flex:1;min-width:0}
+.item .t{font-family:var(--display);font-size:1.25rem;line-height:1.35}
+.item .m{font-size:.78rem;color:var(--muted)}
+.item .k{font-size:.72rem;color:var(--accent-text)}
+.mark{display:inline-block;margin-top:6px;background:var(--soft);color:var(--accent-text);border-radius:6px;padding:2px 8px;font-size:.74rem}
+.item .acts{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.open{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 14px;border-radius:999px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-size:.85rem;font-weight:500;white-space:nowrap}
+.open.read{background:transparent;color:var(--accent-text);border:1px solid var(--accent)}
+.mini{display:flex;gap:2px}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:0;background:transparent;display:grid;place-items:center;color:var(--muted)}
+.icon-btn:hover{background:var(--sunk);color:var(--ink)}
+.icon-btn.on{color:var(--accent)}
+.group-h{font-size:.8rem;color:var(--muted);margin-top:4px}
+.empty{padding:24px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:var(--r)}
+
+.reciters{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.rc{flex:0 0 auto;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 6px;text-align:start}
+.rc .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--sunk);font-family:var(--display);font-size:1.1rem;color:var(--accent)}
+.rc .t{font-size:.86rem;line-height:1.3}
+.rc[aria-pressed="true"]{border-color:var(--accent);background:var(--soft)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.toolbar .search{flex:1 1 220px;min-width:0}
+.surahs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.row{display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;align-items:center;gap:8px;background:var(--surface);padding:8px 10px}
+.row.playing{background:var(--soft)}
+.num{width:36px;height:36px;display:grid;place-items:center;position:relative;font-size:.8rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.num svg{position:absolute;inset:0;width:36px;height:36px;color:var(--line)}
+.row.playing .num svg{color:var(--accent)}
+.num span{position:relative}
+.row .nm{font-family:var(--display);font-size:1.2rem;line-height:1.3}
+.row .meta{font-size:.72rem;color:var(--muted)}
+.play{width:40px;height:40px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);display:grid;place-items:center;flex:none}
+.row.playing .play{background:var(--accent);color:var(--accent-ink)}
+
+.player{position:fixed;inset:auto 0 0;z-index:25;background:var(--deep);color:var(--on-deep);border-top:1px solid rgba(216,170,78,.35);padding-bottom:env(safe-area-inset-bottom,0px)}
+.player .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding-block:8px 10px}
+.np{min-width:0}
+.np .tt{font-family:var(--display);font-size:1.15rem;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np .sub{font-size:.72rem;color:var(--on-deep-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np a{color:var(--gold);text-decoration:none}
+.np-err{font-size:.7rem;color:var(--gold)}
+.ctrls{display:flex;gap:4px;align-items:center}
+.ctrls button{background:transparent;border:0;color:var(--on-deep);width:40px;height:40px;border-radius:50%;display:grid;place-items:center}
+.ctrls .big{background:var(--gold);color:#1B1406;width:46px;height:46px}
+.ctrls .on{color:var(--gold)}
+.ctrls .spd{font-size:.72rem;width:auto;padding:0 8px;border:1px solid rgba(234,241,237,.25);border-radius:999px;height:28px}
+.bar{grid-column:1/-1;display:flex;align-items:center;gap:10px;font-size:.7rem;font-variant-numeric:tabular-nums}
+.bar input{flex:1;accent-color:var(--gold);min-width:0}
+
+.scrim{position:fixed;inset:0;background:rgba(5,12,10,.45);z-index:50}
+.sheet{position:fixed;inset:auto 0 0;z-index:51;background:var(--surface);color:var(--ink);border-radius:18px 18px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-width:560px;margin-inline:auto;display:grid;gap:12px;max-height:85vh;overflow:auto}
+.sheet h2{margin:0;font-family:var(--display);font-size:1.5rem;line-height:1.3}
+.sheet .sub{font-size:.8rem;color:var(--muted);margin-top:-8px}
+.field{display:grid;gap:4px;font-size:.78rem;color:var(--muted)}
+.field input{height:46px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:0 12px;font:inherit;font-size:.95rem;min-width:0}
+.fields{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{height:46px;border-radius:10px;border:0;padding:0 16px;font-weight:600;flex:1}
+.btn.pri{background:var(--accent);color:var(--accent-ink)}
+.btn.sec{background:var(--sunk);color:var(--ink)}
+.btn.del{background:transparent;color:var(--muted);flex:0 0 auto;border:1px solid var(--line)}
+.list-pick{display:grid;gap:6px}
+.list-pick label{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px}
+.list-pick input{width:18px;height:18px;accent-color:var(--accent)}
+.newlist{display:flex;gap:8px}
+.newlist input{flex:1;min-width:0;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:0 12px;font:inherit}
+.newlist button{height:44px;border-radius:10px;border:1px solid var(--accent);background:none;color:var(--accent-text);padding:0 14px}
+.toast{position:fixed;left:50%;translate:-50% 0;bottom:calc(140px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:.85rem;max-width:calc(100% - 32px)}
+
+.lists{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.lists .door{min-height:80px}
+footer{padding-block:6px 20px;color:var(--muted);font-size:.78rem}
+@media (max-width:420px){.ctrls .hide-sm{display:none}.fields{grid-template-columns:90px minmax(0,1fr)}.item{flex-wrap:wrap}.item .acts{flex-direction:row;align-items:center;width:100%;justify-content:space-between}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app" dir="rtl" lang="ar">
+<header class="top">
+  <div class="wrap">
+    <button type="button" class="brand" data-go="home" aria-label="الرئيسية">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="24" height="24"/><rect x="8" y="8" width="24" height="24" transform="rotate(45 20 20)"/></g><circle cx="20" cy="20" r="4" fill="currentColor"/></svg>
+      <b>المكتبة الإسلامية</b>
+    </button>
+    <div class="top-actions">
+      <button type="button" class="top-btn" data-go="mine" aria-label="مكتبتي"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span>مكتبتي</span></button>
+      <button type="button" class="top-btn" id="themeBtn" aria-label="تبديل الوضع الليلي"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div id="viewHead"></div>
+<main class="wrap" id="main"></main>
+
+<div class="player" id="player" hidden>
+  <div class="wrap">
+    <div class="np"><div class="tt" id="npT"></div><div class="sub"><span id="npS"></span> <a id="npLink" target="_blank" rel="noopener">المصدر ↗</a></div><div class="np-err" id="npErr" hidden>تعذّر التشغيل هنا. افتح السورة من المصدر.</div></div>
+    <div class="ctrls">
+      <button type="button" class="hide-sm" id="rep" aria-label="تكرار" aria-pressed="false"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></button>
+      <button type="button" id="next" aria-label="السورة التالية"><svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M18 5v14l-9-7zM8 5v14H6V5z"/></svg></button>
+      <button type="button" class="big" id="pp" aria-label="تشغيل"><svg class="ico" id="ppIco" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5v14L6 12z"/></svg></button>
+      <button type="button" id="prev" aria-label="السورة السابقة"><svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5v14l9-7zM16 5v14h2V5z"/></svg></button>
+      <button type="button" class="spd hide-sm" id="spd" aria-label="سرعة التشغيل">1×</button>
+    </div>
+    <div class="bar"><span id="cur">0:00</span><input type="range" id="seek" min="0" max="100" value="0" step="0.1" aria-label="موضع التشغيل"><span id="dur">0:00</span></div>
+  </div>
+</div>
+
+<div id="sheetHost"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+</div>
+
+<script>
+document.documentElement.lang="ar";document.documentElement.dir="rtl";
+const AR=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+const store={get(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const enDigits=s=>String(s||"").replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));
+const norm=s=>enDigits(s).replace(/[ً-ْٰ]/g,"").replace(/[أإآٱا]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/ؤ/g,"و").replace(/ئ/g,"ي").toLowerCase().trim();
+const fmt=s=>{s=Math.max(0,Math.floor(s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return(h?h+":"+String(m).padStart(2,"0"):m)+":"+String(x).padStart(2,"0")};
+const parseT=t=>{if(!t)return 0;const p=enDigits(t).split(/[:.]/).map(Number).filter(n=>!isNaN(n));return p.reduce((a,v)=>a*60+v,0)};
+
+/* ========== DATA ========== */
+const SURAH_RAW="الفاتحة,7,m|البقرة,286,d|آل عمران,200,d|النساء,176,d|المائدة,120,d|الأنعام,165,m|الأعراف,206,m|الأنفال,75,d|التوبة,129,d|يونس,109,m|هود,123,m|يوسف,111,m|الرعد,43,d|إبراهيم,52,m|الحجر,99,m|النحل,128,m|الإسراء,111,m|الكهف,110,m|مريم,98,m|طه,135,m|الأنبياء,112,m|الحج,78,d|المؤمنون,118,m|النور,64,d|الفرقان,77,m|الشعراء,227,m|النمل,93,m|القصص,88,m|العنكبوت,69,m|الروم,60,m|لقمان,34,m|السجدة,30,m|الأحزاب,73,d|سبأ,54,m|فاطر,45,m|يس,83,m|الصافات,182,m|ص,88,m|الزمر,75,m|غافر,85,m|فصلت,54,m|الشورى,53,m|الزخرف,89,m|الدخان,59,m|الجاثية,37,m|الأحقاف,35,m|محمد,38,d|الفتح,29,d|الحجرات,18,d|ق,45,m|الذاريات,60,m|الطور,49,m|النجم,62,m|القمر,55,m|الرحمن,78,d|الواقعة,96,m|الحديد,29,d|المجادلة,22,d|الحشر,24,d|الممتحنة,13,d|الصف,14,d|الجمعة,11,d|المنافقون,11,d|التغابن,18,d|الطلاق,12,d|التحريم,12,d|الملك,30,m|القلم,52,m|الحاقة,52,m|المعارج,44,m|نوح,28,m|الجن,28,m|المزمل,20,m|المدثر,56,m|القيامة,40,m|الإنسان,31,d|المرسلات,50,m|النبأ,40,m|النازعات,46,m|عبس,42,m|التكوير,29,m|الانفطار,19,m|المطففين,36,m|الانشقاق,25,m|البروج,22,m|الطارق,17,m|الأعلى,19,m|الغاشية,26,m|الفجر,30,m|البلد,20,m|الشمس,15,m|الليل,21,m|الضحى,11,m|الشرح,8,m|التين,8,m|العلق,19,m|القدر,5,m|البينة,8,d|الزلزلة,8,d|العاديات,11,m|القارعة,11,m|التكاثر,8,m|العصر,3,m|الهمزة,9,m|الفيل,5,m|قريش,4,m|الماعون,7,m|الكوثر,3,m|الكافرون,6,m|النصر,3,d|المسد,5,m|الإخلاص,4,m|الفلق,5,m|الناس,6,m";
+const SURAHS=SURAH_RAW.split("|").map((s,i)=>{const[n,a,t]=s.split(",");return{n:i+1,name:n,ayat:+a,type:t}});
+// تلاوات MP3Quran.net — ملفات السور 001.mp3 … 114.mp3
+const RECITERS=[
+  {id:"afasy",name:"مشاري راشد العفاسي",pace:9,slug:"afs",base:"https://server8.mp3quran.net/afs/"},
+  {id:"basit",name:"عبد الباسط عبد الصمد",pace:13,slug:"basit",base:"https://server7.mp3quran.net/basit/"},
+  {id:"husary",name:"محمود خليل الحصري",pace:11,slug:"husr",base:"https://server13.mp3quran.net/husr/"},
+  {id:"minshawi",name:"محمد صديق المنشاوي",pace:12,slug:"minsh",base:"https://cdn.mp3quran.net/audio/muhammad-minshawi/r1/"},
+  {id:"ghamdi",name:"سعد الغامدي",pace:8,slug:"s_gmd",base:"https://server7.mp3quran.net/s_gmd/"},
+  {id:"maher",name:"ماهر المعيقلي",pace:8,slug:"maher",base:"https://server8.mp3quran.net/maher/"}
+];
+// آيات الافتتاح — تتغيّر في كل زيارة، وتُتلى مع أول لمسة (EveryAyah، بصوت العفاسي)
+const VERSES=[
+  {s:13,a:28,t:"الَّذِينَ آمَنُوا وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ اللَّهِ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ"},
+  {s:2,a:152,t:"فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ"},
+  {s:94,a:5,t:"فَإِنَّ مَعَ الْعُسْرِ يُسْرًا"},
+  {s:3,a:139,t:"وَلَا تَهِنُوا وَلَا تَحْزَنُوا وَأَنتُمُ الْأَعْلَوْنَ إِن كُنتُم مُّؤْمِنِينَ"},
+  {s:29,a:69,t:"وَالَّذِينَ جَاهَدُوا فِينَا لَنَهْدِيَنَّهُمْ سُبُلَنَا وَإِنَّ اللَّهَ لَمَعَ الْمُحْسِنِينَ"}
+];
+
+/* أبواب المكتبتين بالترتيب */
+const SECS=[
+  ["fiqh","الفقه","الأحكام الشرعية والعبادات والمعاملات"],
+  ["usul","أصول الفقه","قواعد استنباط الأحكام الشرعية"],
+  ["aqaid","العقائد والكلام","التوحيد والعدل والنبوة والإمامة والمعاد"],
+  ["maarif","المعارف","مكتبة الشيخ مصباح اليزدي"],
+  ["mantiq","المنطق","التفكير الصحيح وقواعد الاستدلال"],
+  ["falsafa","الفلسفة الإسلامية","الوجود والعقل والنفس والمعرفة"],
+  ["tafsir","تفسير القرآن","فهم الآيات ومعانيها ودلالاتها"],
+  ["ulum","علوم القرآن","أسباب النزول والمحكم والمتشابه"],
+  ["hadith","علم الحديث","روايات النبي وأهل البيت (ع)"],
+  ["rijal","الرجال والدراية","الرواة وتقييم الأحاديث"],
+  ["lugha","اللغة العربية","النحو والصرف والبلاغة"],
+  ["akhlaq","الأخلاق وتهذيب النفس","تزكية النفس والفضائل والرذائل"],
+  ["seerah","السيرة النبوية","حياة النبي ﷺ"],
+  ["history","التاريخ والسياسة","قراءة الأحداث والمواقف"],
+  ["sahifa","الصحيفة السجادية","أدعية الإمام زين العابدين (ع)"],
+  ["adiya","الأدعية","أدعية مأثورة"],
+  ["ziyarat","الزيارات","زيارات المعصومين (ع)"],
+  ["majalis","المجالس الحسينية","مجالس محرم وصفر"],
+  ["lectures","المحاضرات","محاضرات عامة"],
+  ["munazarat","المناظرات","حوارات ومناظرات"]
+].map(([id,title,desc])=>({id,title,desc}));
+const SEC=Object.fromEntries([...SECS,{id:"nahj",title:"نهج البلاغة",desc:"خطب الإمام علي (ع) ورسائله وحكمه"}].map(s=>[s.id,s]));
+
+/* المواد — lib: a مسموع، r مقروء · s: الأبواب · br: الفرع · au: المؤلف · by: الشارح أو القارئ · k: النوع · tp: كلمات للبحث */
+const YT="https://www.youtube.com/watch?v=",PL="https://www.youtube.com/playlist?list=",FS="https://soundcloud.com/fawzialsaif/",AF="https://alfeker.net/b/";
+const ITEMS=[
+  {id:"u1",lib:"a",s:["usul"],br:"الحلقة الأولى",t:"شرح الحلقة الأولى",au:"الشهيد السيد محمد باقر الصدر",by:"الشيخ محمد العبيدان القطيفي",k:"قائمة · ٣٨ درسًا",u:PL+"PLc4StI_9asx-MCq-oJZjPPcnd1scILjDR",tp:"دروس في علم الأصول الحلقات"},
+  {id:"u2",lib:"a",s:["usul"],br:"الحلقة الثانية",t:"شرح الحلقة الثانية",au:"الشهيد السيد محمد باقر الصدر",by:"الشيخ علي العبود",k:"قائمة كاملة",u:PL+"PLXNQQLzru0ZEppXbArSC4NCXAVTdbZhNa",tp:"دروس في علم الأصول الحلقات"},
+  {id:"q1",lib:"a",s:["aqaid","maarif"],br:"دروس في العقيدة الإسلامية",t:"شرح دروس في العقيدة الإسلامية",au:"الشيخ محمد تقي مصباح اليزدي",by:"قناة الشيخ علي آل محسن",k:"قائمة كاملة",u:PL+"PLHNhFObzjUqXvIr-1wfBQG1tvSh5xyfyv",tp:"التوحيد العدل النبوة الإمامة المعاد"},
+  {id:"q2",lib:"a",s:["aqaid"],br:"التوحيد",t:"الدعاء ومسألة وجود الخالق",by:"الشيخ أحمد سلمان",k:"محاضرة",u:YT+"ZJDXdUOgYxY",tp:"وجود الله الإلحاد الدعاء"},
+  {id:"q3",lib:"a",s:["aqaid"],br:"الإمامة",t:"كيف حاولوا طمس الغدير؟",by:"الشيخ أحمد سلمان",k:"محاضرة",u:YT+"XWnYe8Q9J9w",tp:"الغدير الإمامة الولاية"},
+  {id:"f1",lib:"a",s:["falsafa"],br:"بداية الحكمة",t:"مقدمة في الفلسفة وتعريف الحكمة الإلهية",au:"العلامة الطباطبائي",by:"الشيخ د. أكرم بركات",k:"درس",u:YT+"FBXlMF8t6RM",tp:"الفلسفة الحكمة"},
+  {id:"f2",lib:"a",s:["falsafa"],br:"بداية الحكمة",t:"الأدلة على أصالة الوجود",au:"العلامة الطباطبائي",by:"الشيخ د. أكرم بركات",k:"درس",u:YT+"oAO29WRXiOA",tp:"أصالة الوجود"},
+  {id:"f3",lib:"a",s:["falsafa"],br:"بداية الحكمة",t:"الوجود حقيقة واحدة مشككة",au:"العلامة الطباطبائي",by:"الشيخ د. أكرم بركات",k:"درس",u:YT+"yrhGfWeeRbI",tp:"التشكيك الوجود"},
+  {id:"f4",lib:"a",s:["falsafa"],br:"بداية الحكمة",t:"المرحلة الثانية: الأدلة على إثبات الوجود الذهني",au:"العلامة الطباطبائي",by:"الشيخ د. أكرم بركات",k:"درس",u:YT+"FYCjtmUOuyw",tp:"الوجود الذهني"},
+  {id:"f5",lib:"a",s:["falsafa"],br:"بداية الحكمة",t:"في معاني الإمكان",au:"العلامة الطباطبائي",by:"الشيخ د. أكرم بركات",k:"درس",u:YT+"nfLdtwIKz4s",tp:"الإمكان الوجوب"},
+  {id:"f6",lib:"a",s:["falsafa"],br:"بداية الحكمة",t:"المرحلة السابعة: العلة والمعلول",au:"العلامة الطباطبائي",by:"الشيخ د. أكرم بركات",k:"درس",u:YT+"Z-TT7T9pUWU",tp:"العلية السببية"},
+  {id:"t1",lib:"a",s:["tafsir"],br:"تفسير النور",t:"تفسير النور بصوت مؤلفه",au:"الشيخ محسن قرائتي",k:"قناة",u:"https://www.youtube.com/@mohsenqraati1659",tp:"تفسير الآيات"},
+  {id:"t2",lib:"a",s:["tafsir","ulum"],br:"البيان",t:"البيان في تفسير القرآن (مسموعًا)",au:"السيد أبو القاسم الخوئي",k:"قائمة · ٢٣ مقطعًا",u:PL+"PLBbcMU5gqg8B_EHoQkL4_NAoVWxTpCLQu",tp:"إعجاز القرآن صيانة القرآن من التحريف النسخ"},
+  {id:"t3",lib:"r",s:["tafsir"],br:"تسنيم",t:"تسنيم في تفسير القرآن",au:"الشيخ عبد الله جوادي آملي",k:"مجلدات متفرقة",u:"https://archive.org/details/wasiti14_gmail_05",tp:"تفسير القرآن بالقرآن"},
+  {id:"h1",lib:"a",s:["hadith"],br:"نقد الروايات",t:"الموروث الروائي تحت المجهر (ج١)",by:"الشيخ أحمد سلمان",k:"محاضرة",u:YT+"FyAA20Jxyoo",tp:"الروايات البخاري الكافي"},
+  {id:"j1",lib:"a",s:["rijal"],br:"الرجال والدراية",t:"دروس موجزة في علمي الرجال والدراية",by:"الشيخ علي آل محسن",k:"قائمة كاملة",u:PL+"PLHNhFObzjUqW6b7WDfWua8LJgnnbr9icb",tp:"الوثاقة الجرح والتعديل أقسام الحديث"},
+  {id:"y1",lib:"a",s:["history"],br:"السقيفة",t:"أصحاب السقيفة",by:"الشيخ أحمد سلمان",k:"محاضرة",u:YT+"hi8Tgz9aerE",tp:"السقيفة الخلافة"},
+  {id:"y2",lib:"a",s:["history"],br:"عاشوراء",t:"حقيقة عاشوراء: ما قبل المعركة (ج١)",by:"الشيخ أحمد سلمان",k:"محاضرة",u:YT+"dIX5S8KZJ0k",tp:"كربلاء الحسين"},
+  {id:"l1",lib:"a",s:["lectures"],br:"محاضرات منبرية",t:"أرضية نشوء المذاهب",by:"الشيخ فوزي آل سيف",k:"محاضرة",u:YT+"Z_R8pxs4m8o",tp:"المذاهب"},
+  {id:"l2",lib:"a",s:["lectures"],br:"محاضرات منبرية",t:"ما هي أصول الكفر؟",by:"الشيخ فوزي آل سيف",k:"محاضرة",u:YT+"Kg6tirJSV-M",tp:"الكفر"},
+  {id:"l3",lib:"a",s:["lectures"],br:"محاضرات منبرية",t:"الشيخ المفيد ومذهب الإمامية",by:"الشيخ فوزي آل سيف",k:"محاضرة",u:YT+"cGG3iTIY4cY",tp:"المفيد الإمامية"},
+  {id:"l10",lib:"a",s:["lectures"],br:"محاضرات منبرية",t:"كل محاضرات الشيخ فوزي آل سيف",by:"الشيخ فوزي آل سيف",k:"قائمة كاملة",u:PL+"PLB-yaDKRwK9xicfdk1E1SlllS2-82Ksai",tp:""},
+  {id:"l4",lib:"a",s:["lectures","seerah"],br:"محاضرات صوتية",t:"ما لا يصح من سيرة النبي: كان على دين قومه!",by:"الشيخ فوزي آل سيف",k:"صوتي",u:FS+"13-1448",tp:"السيرة النبوية"},
+  {id:"l5",lib:"a",s:["lectures"],br:"محاضرات صوتية",t:"من ظلامات الصديقة الزهراء (ع)",by:"الشيخ فوزي آل سيف",k:"صوتي",u:FS+"938a5d22-731b-46b5-bf18-3d4d55c4691e",tp:"فاطمة الزهراء"},
+  {id:"l6",lib:"a",s:["lectures"],br:"محاضرات صوتية",t:"هل ذهب المعصومون لزيارة الإمام الحسين؟",by:"الشيخ فوزي آل سيف",k:"صوتي",u:FS+"5a-5",tp:"زيارة الحسين"},
+  {id:"l7",lib:"a",s:["lectures"],br:"كتب صوتية",t:"المرجعية الدينية الشيعية",by:"الشيخ فوزي آل سيف",k:"كتاب صوتي",u:FS+"72532083-8bc8-4b43-8302-361b39d99d2e",tp:"المرجعية التقليد"},
+  {id:"l8",lib:"a",s:["lectures"],br:"كتب صوتية",t:"عالم آل محمد: الإمام علي بن موسى الرضا (ع)",by:"الشيخ فوزي آل سيف",k:"كتاب صوتي",u:FS+"3hbqpb4qqmyq",tp:"الإمام الرضا"},
+  {id:"l9",lib:"a",s:["lectures"],br:"محاضرات",t:"الشعائر والتفسير السيكولوجي (ج١)",by:"الشيخ أحمد سلمان",k:"محاضرة",u:YT+"vnHGLXqcAvs",tp:"الشعائر الحسينية"},
+  {id:"m1",lib:"a",s:["majalis"],br:"محرم ١٤٤٧",t:"الليلة السابعة: تنهى عن الفحشاء والمنكر",by:"الشيخ فوزي آل سيف",k:"مجلس",u:YT+"QC8Pa6WoH9I",tp:"محرم"},
+  {id:"m6",lib:"a",s:["majalis"],br:"محرم ١٤٤٧",t:"في استقبال موسم محرم ١٤٤٧",by:"الشيخ فوزي آل سيف",k:"صوتي",u:FS+"42503fca-1f14-420a-946c-eedfcf60ef41",tp:"محرم"},
+  {id:"m2",lib:"a",s:["majalis"],br:"محرم ١٤٤٥",t:"الليلة الثالثة: فلينظر الإنسان إلى طعامه",by:"الشيخ فوزي آل سيف",k:"مجلس",u:YT+"KdRCkHv8uZk",tp:"محرم"},
+  {id:"m3",lib:"a",s:["majalis"],br:"محرم ١٤٤٢",t:"الليلة التاسعة: كيف تسمم العقول؟",by:"الشيخ أحمد سلمان",k:"مجلس · الحساب الرسمي",u:"https://m.soundcloud.com/ahmdi_org/m4a-2",tp:"محرم"},
+  {id:"m4",lib:"a",s:["majalis"],br:"محرم ١٤٤٢",t:"ليلة ١٣: سيرة ذاتية تدخلك الجنة",by:"الشيخ فوزي آل سيف",k:"مجلس",u:YT+"EWBD-jqCFRk",tp:"محرم"},
+  {id:"m5",lib:"a",s:["majalis"],br:"صفر ١٤٣٩",t:"محاضرات شهر صفر ١٤٣٩",by:"الشيخ فوزي آل سيف",k:"مجموعة صوتية",u:FS+"sets/safar1439",tp:"صفر"},
+  {id:"d1",lib:"a",s:["adiya"],br:"أدعية",t:"دعاء كميل",by:"الحاج حسين غريب",k:"دعاء",u:YT+"4TOeyrVBFxU",tp:"ليلة الجمعة"},
+  {id:"d2",lib:"a",s:["adiya"],br:"أدعية",t:"دعاء الصباح",by:"الحاج حسين غريب",k:"دعاء",u:YT+"JjTRkFDYJvY",tp:"الصباح"},
+  {id:"d3",lib:"a",s:["adiya"],br:"أدعية",t:"دعاء الصباح والمساء",by:"الحاج حسين غريب",k:"دعاء",u:YT+"M3NEdY_Lvks",tp:""},
+  {id:"d4",lib:"a",s:["adiya"],br:"أدعية",t:"دعاء الندبة",by:"الحاج حسين غريب",k:"دعاء",u:YT+"Eos0dNK892k",tp:"يوم الجمعة الإمام المهدي"},
+  {id:"d5",lib:"a",s:["adiya","sahifa"],br:"أدعية",t:"دعاء أهل الثغور",by:"الحاج حسين غريب",k:"دعاء",u:YT+"6TUENnAsTJI",tp:"الصحيفة السجادية"},
+  {id:"d6",lib:"a",s:["adiya"],br:"أدعية",t:"دعاء المشلول",by:"الحاج حسين غريب",k:"دعاء",u:YT+"O-lE-GoyENQ",tp:""},
+  {id:"d7",lib:"a",s:["adiya"],br:"أدعية",t:"دعاء القدح",by:"الحاج حسين غريب",k:"دعاء",u:YT+"fYsd13fqbGM",tp:""},
+  {id:"z1",lib:"a",s:["ziyarat"],br:"زيارات الإمام الحسين (ع)",t:"زيارة عاشوراء",by:"الحاج حسين غريب",k:"زيارة",u:"https://soundcloud.com/husseinghorayeb/pgydnhq0ync7",tp:"عاشوراء الحسين"},
+  {id:"z2",lib:"a",s:["ziyarat"],br:"زيارات الإمام الحسين (ع)",t:"زيارة وارث",by:"الحاج حسين غريب",k:"زيارة",u:YT+"s8yLNNBDgZs",tp:"الحسين"},
+  {id:"z3",lib:"a",s:["ziyarat"],br:"زيارات الإمام الحسين (ع)",t:"زيارة الناحية المقدسة",by:"الحاج حسين غريب",k:"زيارة",u:YT+"T_KADG8hsBw",tp:"الحسين"},
+  {id:"z4",lib:"a",s:["ziyarat"],br:"زيارات جامعة",t:"الزيارة الجامعة الكبيرة",by:"الحاج حسين غريب",k:"زيارة",u:YT+"VgdvLN-bgjs",tp:"الأئمة"},
+  {id:"z5",lib:"a",s:["ziyarat"],br:"من العتبات المقدسة",t:"زيارة الإمام الحسين وأبي الفضل العباس (ع)",by:"العتبة الحسينية المقدسة",k:"زيارة",u:YT+"8wD6O3ASQ28",tp:"كربلاء العباس"},
+  {id:"p1",lib:"a",s:["sahifa","akhlaq"],br:"شرح الصحيفة",t:"دروس في شرح الصحيفة السجادية",by:"الشيخ أحمد الصافي",k:"سلسلة · أكثر من ٤٠ درسًا",u:YT+"fPs4Vn9e7EY",tp:"الإمام السجاد الدعاء"},
+  {id:"p2",lib:"a",s:["sahifa"],br:"شرح الصحيفة",t:"شرح الدعاء الأول من الصحيفة السجادية",by:"الشيخ شفيق جرادي",k:"محاضرة",u:YT+"Qvi77Pg1wbc",tp:"التحميد"},
+  {id:"p3",lib:"a",s:["sahifa","akhlaq"],br:"شرح الصحيفة",t:"شرح الدعاء الأول (دروس في الأخلاق ١٣)",by:"الشيخ مهدي البرهاني",k:"درس",u:YT+"bHKFtwJ_Z10",tp:"الأخلاق"},
+  {id:"n1",lib:"a",s:["nahj"],br:"شرح نهج البلاغة",t:"شرح نهج البلاغة: الخطبة الأولى",by:"الشيخ أحمد الصافي",k:"سلسلة",u:YT+"sNav5G83HkU",tp:"خطب الإمام علي التوحيد"},
+  {id:"r1",lib:"r",s:["maarif","aqaid"],br:"العقيدة",t:"دروس في العقيدة الإسلامية",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"1831/",tp:"التوحيد النبوة المعاد"},
+  {id:"r2",lib:"r",s:["maarif"],br:"العقيدة",t:"النبوة في القرآن",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"4587/",tp:"النبوة"},
+  {id:"r3",lib:"r",s:["maarif","falsafa"],br:"الفلسفة والمعرفة",t:"المنهج الجديد في تعليم الفلسفة",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب · جزءان",u:AF+"2633/",tp:"الوجود المعرفة"},
+  {id:"r4",lib:"r",s:["maarif"],br:"الفلسفة والمعرفة",t:"أصول المعارف الإنسانية",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"1478/",tp:"نظرية المعرفة"},
+  {id:"r5",lib:"r",s:["maarif"],br:"الفلسفة والمعرفة",t:"الإيديولوجية المقارنة",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"1564/",tp:"الإيديولوجيا"},
+  {id:"r6",lib:"r",s:["maarif","tafsir"],br:"المعارف القرآنية",t:"معارف القرآن الكريم",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب · ٤ أجزاء",u:AF+"6715/",tp:"تفسير موضوعي"},
+  {id:"r7",lib:"r",s:["maarif"],br:"المعارف القرآنية",t:"معارف القرآن",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"5621/",tp:"تفسير موضوعي"},
+  {id:"r8",lib:"r",s:["maarif"],br:"المعارف القرآنية",t:"مفاهيم القرآن",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"6624/",tp:""},
+  {id:"r9",lib:"r",s:["maarif","akhlaq"],br:"الأخلاق والسلوك",t:"السير إلى الله",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"1527/",tp:"السلوك العرفان"},
+  {id:"r10",lib:"r",s:["maarif","akhlaq"],br:"الأخلاق والسلوك",t:"ذكر الله",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"6063/",tp:"الذكر"},
+  {id:"r11",lib:"r",s:["maarif","akhlaq"],br:"الأخلاق والسلوك",t:"معرفة الذات لبنائها الجديد",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:"https://books.almaaref.org/book.php?id=2325",tp:"تهذيب النفس"},
+  {id:"r12",lib:"r",s:["maarif"],br:"الفكر المعاصر",t:"تحديات ومواجهات: المسؤولية الثقافية، التعددية الدينية، العنف والتسامح",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"2465/",tp:"التعددية"},
+  {id:"r13",lib:"r",s:["maarif"],br:"الفكر المعاصر",t:"أمواج الفتن وسفينة النجاة",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"4240/",tp:"الفتن"},
+  {id:"r14",lib:"r",s:["maarif"],br:"كربلاء",t:"بارقة من سماء كربلاء",au:"الشيخ محمد تقي مصباح اليزدي",k:"كتاب",u:AF+"2196/",tp:"الحسين عاشوراء"}
+];
+const ITEM=Object.fromEntries(ITEMS.map(i=>[i.id,i]));
+const srcOf=u=>u.includes("soundcloud")?"ساوند كلاود":u.includes("youtube")?"يوتيوب":u.includes("archive.org")?"Internet Archive":u.includes("almaaref")?"مكتبة المعارف الإسلامية":u.includes("alfeker")?"شبكة الفكر":"رابط";
+
+/* ========== USER STATE (this device only) ========== */
+let marks=store.get("marks",{});
+let lists=store.get("lists",[{id:"fav",name:"المفضلة",items:[]}]);
+let qpos=store.get("qpos",null);
+let reciter=store.get("rec","afasy");
+const saveMarks=()=>store.set("marks",marks),saveLists=()=>store.set("lists",lists);
+
+/* ========== ICONS ========== */
+const I={
+  star:'<svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="7" width="26" height="26"/><rect x="7" y="7" width="26" height="26" transform="rotate(45 20 20)"/></g></svg>',
+  bigStar:'<svg class="star" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><rect x="8" y="8" width="24" height="24"/><rect x="8" y="8" width="24" height="24" transform="rotate(45 20 20)"/></g><circle cx="20" cy="20" r="3.5" fill="currentColor"/></svg>',
+  play:'<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5v14L6 12z"/></svg>',
+  pause:'<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>',
+  mark:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  markOn:'<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  plus:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+  back:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>',
+  search:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  audio:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="3" y="14" width="4" height="7" rx="1"/><rect x="17" y="14" width="4" height="7" rx="1"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2z"/><path d="M22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z"/></svg>',
+  sound:'<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9z"/></svg>'
+};
+
+/* ========== PLAYER STATE (declared early; used by renderers) ========== */
+let track=null,playing=false,pos=0,dur=0,speed=1,repeat=false,audio=null,saveTick=0;
+let verseAudio=null,verseTried=false;
+let view="home",query="",qFilter="all",surahQ="",typeF="all";
+let verse=VERSES[(store.get("vi",-1)+1)%VERSES.length];store.set("vi",VERSES.indexOf(verse));
+
+/* ========== ROUTER ========== */
+// views: home · quran · nahj · audio · read · a-<sec> · r-<sec> · mine · list-<id> · search
+function go(v){if(location.hash.slice(1)!==v)location.hash=v;else render()}
+addEventListener("hashchange",()=>{closeSheet();render();scrollTo(0,0)});
+const current=()=>location.hash.slice(1)||"home";
+function head(title,eyebrow,desc,backTo){
+  const b=backTo||"home";
+  return `<div class="vhead"><div class="wrap"><button type="button" class="back" data-go="${b}">${I.back}<span>${b==="home"?"الرئيسية":"رجوع"}</span></button>${eyebrow?`<div class="eyebrow">${esc(eyebrow)}</div>`:""}<h1>${esc(title)}</h1>${desc?`<p>${esc(desc)}</p>`:""}</div></div>`;
+}
+function render(){
+  view=current();
+  let H="",M="";
+  if(view==="home"){H=homeHero();M=homeBody()}
+  else if(view==="quran"){H=head("القرآن الكريم","","١١٤ سورة كاملة · رواية حفص عن عاصم");M=quranBody()}
+  else if(view==="nahj"){H=head("نهج البلاغة","","خطب الإمام علي (ع) ورسائله وحكمه");M=sectionBody("all","nahj")}
+  else if(view==="audio"){H=head("المكتبة المسموعة","","دروس ومحاضرات وأدعية وزيارات");M=doorsBody("a")}
+  else if(view==="read"){H=head("المكتبة المقروءة","","أمهات الكتب بنصّها");M=doorsBody("r")}
+  else if(/^[ar]-[a-z]+$/.test(view)&&SEC[view.slice(2)]){const lib=view[0],s=SEC[view.slice(2)];H=head(s.title,lib==="a"?"المكتبة المسموعة":"المكتبة المقروءة",s.desc,lib==="a"?"audio":"read");M=sectionBody(lib,s.id)}
+  else if(view==="mine"){H=head("مكتبتي","","محفوظة على هذا الجهاز");M=mineBody()}
+  else if(/^list-[a-z0-9]+$/.test(view)){const L=lists.find(l=>l.id===view.slice(5));if(!L){location.hash="mine";return}H=head(L.name,"مكتبتي",AR(L.items.length)+" مادة","mine");M=listBody(L)}
+  else if(view==="search"){H=head("البحث","","بالعنوان أو الموضوع أو القسم أو الفرع أو اسم الكاتب");M=searchBody()}
+  else{location.hash="home";return}
+  $("viewHead").innerHTML=H;$("main").innerHTML=M;
+  if(view==="home")drawPattern();
+  if(view==="quran")renderSurahs();
+}
+
+/* ========== HOME ========== */
+function homeHero(){
+  return `<div class="hero"><canvas id="pattern" aria-hidden="true"></canvas><div class="wrap">
+    <p class="verse"><span class="orn">﴿</span> ${verse.t} <span class="orn">﴾</span></p>
+    <div class="verse-ref"><span>سورة ${SURAHS[verse.s-1].name} · ${AR(verse.a)}</span><button type="button" id="verseBtn">${I.sound}<span id="verseLbl">${verseAudio&&!verseAudio.paused?"إيقاف":"المس للاستماع"}</span></button></div>
+  </div></div>`;
+}
+function continueRows(limit){
+  const rows=[];
+  if(qpos){const s=SURAHS[qpos.n-1],r=RECITERS.find(x=>x.id===qpos.r);if(s&&r)rows.push({at:qpos.at,h:`<div class="cont-row"><span class="tag q">قرآن</span><div class="x"><div class="t">سورة ${s.name}</div><div class="s">${r.name} · ${AR(fmt(qpos.pos))}</div></div><button type="button" class="play" data-resume="1" aria-label="تابع الاستماع">${I.play}</button></div>`})}
+  Object.entries(marks).forEach(([id,m])=>{const it=ITEM[id];if(!it)return;rows.push({at:m.at,h:`<div class="cont-row"><span class="tag ${it.lib}">${it.lib==="a"?"مسموع":"مقروء"}</span><div class="x"><div class="t">${esc(it.t)}</div><div class="s">${esc(markText(m,it))}</div></div>${openBtn(it,true)}</div>`})});
+  return rows.sort((a,b)=>b.at-a.at).slice(0,limit||3).map(r=>r.h).join("");
+}
+const searchForm=()=>`<form id="homeSearch" role="search"><label class="search">${I.search}<input id="homeQ" type="search" placeholder="ابحث بالعنوان أو الموضوع أو المؤلف" aria-label="بحث في المكتبة" value="${esc(query)}"></label></form>`;
+function homeBody(){
+  const cont=continueRows(3);
+  const aCount=ITEMS.filter(i=>i.lib==="a"&&!i.s.includes("nahj")).length,rCount=ITEMS.filter(i=>i.lib==="r").length;
+  return `<div class="view">
+    ${searchForm()}
+    ${cont?`<div class="cont"><p class="label">تابع من حيث توقفت</p>${cont}</div>`:""}
+    <button type="button" class="big-card" data-go="quran">${I.bigStar}<span><span class="t">القرآن الكريم</span><br><span class="d">١١٤ سورة · ${AR(RECITERS.length)} قرّاء</span></span><span class="go">استمع ←</span></button>
+    <button type="button" class="nahj-card" data-go="nahj"><span><span class="t">نهج البلاغة</span><br><span class="d">خطب الإمام علي (ع) ورسائله وحكمه</span></span><span class="go">ادخل ←</span></button>
+    <div class="duo">
+      <button type="button" class="lib-card" data-go="audio">${I.audio}<span class="t">المكتبة المسموعة</span><span class="d">${AR(aCount)} مادة صوتية</span></button>
+      <button type="button" class="lib-card" data-go="read">${I.book}<span class="t">المكتبة المقروءة</span><span class="d">${AR(rCount)} كتابًا</span></button>
+    </div>
+    <footer>تلاوات القرآن من MP3Quran.net، والدروس من يوتيوب وساوند كلاود، والكتب من مكتبات إلكترونية. علاماتك وقوائمك محفوظة على هذا الجهاز.</footer>
+  </div>`;
+}
+
+/* ========== DOORS & SECTIONS ========== */
+const inSec=(lib,sec)=>ITEMS.filter(i=>(lib==="all"||i.lib===lib)&&i.s.includes(sec));
+function doorsBody(lib){
+  const doors=SECS.map(s=>({s,n:inSec(lib,s.id).length})).filter(d=>d.n);
+  return `<div class="view"><div class="doors">${doors.map(d=>`<button type="button" class="door" data-go="${lib}-${d.s.id}"><span class="t">${d.s.title}</span><span class="d">${d.s.desc}</span><span class="c">${AR(d.n)} ${lib==="a"?"مادة":"كتاب"}</span></button>`).join("")}</div>
+  <p class="label">الأبواب التي لم تُضَف موادها بعد لا تظهر هنا.</p></div>`;
+}
+function sectionBody(lib,sec){
+  const items=inSec(lib,sec);
+  if(!items.length)return `<div class="view"><div class="empty">لا توجد مواد في هذا الباب بعد.</div></div>`;
+  let html="";
+  if(lib==="all"){
+    const a=items.filter(i=>i.lib==="a"),r=items.filter(i=>i.lib==="r");
+    if(a.length)html+=`<p class="group-h">مسموع</p><div class="items">${a.map(itemCard).join("")}</div>`;
+    if(r.length)html+=`<p class="group-h">مقروء</p><div class="items">${r.map(itemCard).join("")}</div>`;
+    else html+=`<p class="label">النص المقروء وشروحه تُضاف في المرحلة القادمة.</p>`;
+  }else{
+    const g={};items.forEach(i=>{(g[i.br||""]=g[i.br||""]||[]).push(i)});
+    html=Object.entries(g).map(([br,its])=>`${br?`<p class="group-h">${esc(br)}</p>`:""}<div class="items">${its.map(itemCard).join("")}</div>`).join("");
+  }
+  return `<div class="view">${html}</div>`;
+}
+function markText(m,it){
+  if(!m)return"";
+  if(it.lib==="r")return "علامتك: "+(m.page?"ص "+AR(m.page):"")+(m.page&&m.note?" · ":"")+(m.note||"");
+  return "علامتك: "+(m.t?"توقفت عند "+AR(m.t):"")+(m.t&&m.note?" · ":"")+(m.note||"");
+}
+function linkWithTime(it,m){
+  let u=it.u;const sec=m&&m.t?parseT(m.t):0;
+  if(sec&&u.includes("youtube.com/watch"))u+="&t="+sec+"s";
+  else if(sec&&u.includes("soundcloud.com")&&!u.includes("/sets/"))u+="#t="+fmt(sec);
+  return u;
+}
+function openBtn(it,cont){
+  const m=marks[it.id];const label=cont||m?"تابع":(it.lib==="r"?"اقرأ":"استمع");
+  return `<a class="open${it.lib==="r"?" read":""}" href="${esc(linkWithTime(it,m))}" target="_blank" rel="noopener">${label} ↗</a>`;
+}
+function itemCard(it){
+  const m=marks[it.id],inList=lists.some(l=>l.items.includes(it.id));
+  const meta=[it.au,it.by&&it.by!==it.au?it.by:null].filter(Boolean).join(" · ");
+  return `<article class="item"><div class="x"><div class="t">${esc(it.t)}</div>${meta?`<div class="m">${esc(meta)}</div>`:""}<div class="k">${esc(it.k||"")} · ${srcOf(it.u)}</div>${m?`<span class="mark">${esc(markText(m,it))}</span>`:""}</div>
+  <div class="acts">${openBtn(it)}<div class="mini"><button type="button" class="icon-btn${m?" on":""}" data-mark="${it.id}" aria-label="ضع علامة">${m?I.markOn:I.mark}</button><button type="button" class="icon-btn${inList?" on":""}" data-addlist="${it.id}" aria-label="أضف إلى قائمة">${I.plus}</button></div></div></article>`;
+}
+
+/* ========== SEARCH ========== */
+function searchResults(){
+  const words=norm(query).split(/\s+/).filter(Boolean);
+  if(!words.length)return `<div class="empty">اكتب كلمة للبحث، مثل «الحلقة» أو «الصدر» أو «دعاء».</div>`;
+  const hay=it=>norm([it.t,it.au,it.by,it.br,it.tp,it.k,...it.s.map(s=>SEC[s].title)].join(" "));
+  let res=ITEMS.filter(it=>{const h=hay(it);return words.every(w=>h.includes(w))});
+  if(qFilter!=="all")res=res.filter(i=>i.lib===qFilter);
+  const sur=qFilter!=="r"?SURAHS.filter(s=>words.every(w=>norm("سورة "+s.name+" "+s.n).includes(w))).slice(0,6):[];
+  const secs=SECS.filter(s=>words.every(w=>norm(s.title+" "+s.desc).includes(w))&&inSec("all",s.id).length);
+  const a=res.filter(i=>i.lib==="a"),r=res.filter(i=>i.lib==="r");
+  let out="";
+  if(secs.length)out+=`<p class="group-h">أبواب</p><div class="doors">${secs.map(s=>`<button type="button" class="door" data-go="${inSec("a",s.id).length?"a":"r"}-${s.id}"><span class="t">${s.title}</span><span class="d">${s.desc}</span></button>`).join("")}</div>`;
+  if(sur.length)out+=`<p class="group-h">سور القرآن</p><div class="surahs">${sur.map(s=>surahRow(s)).join("")}</div>`;
+  if(a.length)out+=`<p class="group-h">مسموع · ${AR(a.length)}</p><div class="items">${a.map(itemCard).join("")}</div>`;
+  if(r.length)out+=`<p class="group-h">مقروء · ${AR(r.length)}</p><div class="items">${r.map(itemCard).join("")}</div>`;
+  return out||`<div class="empty">لا نتائج لـ«${esc(query)}». جرّب كلمة أقصر أو اسم المؤلف.</div>`;
+}
+function searchBody(){
+  const chips=[["all","الكل"],["a","مسموع"],["r","مقروء"]].map(([v,t])=>`<button type="button" class="chip" data-qf="${v}" aria-pressed="${qFilter===v}">${t}</button>`).join("");
+  return `<div class="view">${searchForm()}<div class="chips">${chips}</div><div class="view" id="results" style="padding:0">${searchResults()}</div></div>`;
+}
+
+/* ========== MY LIBRARY ========== */
+function mineBody(){
+  const cont=continueRows(20);
+  return `<div class="view">
+    <div class="cont"><p class="label">تابع من حيث توقفت</p>${cont||'<div class="empty">ضع علامة على درس أو كتاب بزر العلامة، أو استمع إلى سورة، وستظهر هنا.</div>'}</div>
+    <p class="label">قوائمي</p>
+    <div class="lists">${lists.map(l=>`<button type="button" class="door" data-go="list-${l.id}"><span class="t">${esc(l.name)}</span><span class="c">${AR(l.items.length)} مادة</span></button>`).join("")}</div>
+    <form class="newlist" id="newListForm"><input id="newListName" placeholder="اسم قائمة جديدة" aria-label="اسم قائمة جديدة" maxlength="40"><button type="submit">+ إنشاء</button></form>
+    <p class="label">قوائمك وعلاماتك محفوظة في هذا المتصفح فقط، ولا تنتقل إلى جهاز آخر.</p>
+  </div>`;
+}
+function listBody(L){
+  const parts=L.items.map(id=>{
+    if(id.startsWith("s:")){const[,r,n]=id.split(":");const s=SURAHS[+n-1];return s&&RECITERS.some(x=>x.id===r)?`<div class="surahs">${surahRow(s,r)}</div>`:""}
+    return ITEM[id]?itemCard(ITEM[id]):"";
+  }).join("");
+  return `<div class="view">${parts?`<div class="items">${parts}</div>`:'<div class="empty">القائمة فارغة. أضف إليها بزر + بجانب أي مادة أو سورة.</div>'}
+  ${L.id!=="fav"?`<div class="btns"><button type="button" class="btn del" data-dellist="${L.id}">حذف القائمة</button></div>`:""}</div>`;
+}
+
+/* ========== SHEETS ========== */
+function closeSheet(){$("sheetHost").innerHTML=""}
+function openMarkSheet(id){
+  const it=ITEM[id],m=marks[id]||{},isR=it.lib==="r";
+  $("sheetHost").innerHTML=`<div class="scrim" data-close="1"></div><form class="sheet" id="markForm" data-id="${id}" aria-label="ضع علامة">
+    <h2>ضع علامة</h2><div class="sub">${esc(it.t)}</div>
+    <div class="fields">${isR
+      ?`<label class="field">الصفحة<input id="mkPage" inputmode="numeric" value="${esc(m.page||"")}"></label><label class="field">ملاحظة<input id="mkNote" value="${esc(m.note||"")}" placeholder="مثل: باب الإمامة"></label>`
+      :`<label class="field">توقفت عند<input id="mkTime" inputmode="numeric" value="${esc(m.t||"")}" placeholder="23:10"></label><label class="field">ملاحظة<input id="mkNote" value="${esc(m.note||"")}" placeholder="${/playlist|@|sets/.test(it.u)?"رقم الدرس، مثل: الدرس ٧":"اختياري"}"></label>`}</div>
+    ${isR?"":`<p class="label">${/playlist|@|sets/.test(it.u)?"هذه قائمة كاملة: اكتب رقم الدرس في الملاحظة والدقيقة في الخانة.":"عند المتابعة يفتح المقطع من هذه الدقيقة مباشرة."}</p>`}
+    <div class="btns"><button type="submit" class="btn pri">حفظ العلامة</button>${marks[id]?`<button type="button" class="btn del" data-unmark="${id}">إزالة</button>`:""}<button type="button" class="btn sec" data-close="1">إلغاء</button></div>
+  </form>`;
+  const f=$(isR?"mkPage":"mkTime");f&&f.focus();
+}
+function itemLabel(id){if(id.startsWith("s:")){const p=id.split(":");return "سورة "+SURAHS[+p[2]-1].name}return ITEM[id].t}
+function openListSheet(id){
+  $("sheetHost").innerHTML=`<div class="scrim" data-close="1"></div><div class="sheet" role="dialog" aria-label="أضف إلى قائمة"><h2>أضف إلى قائمة</h2><div class="sub">${esc(itemLabel(id))}</div>
+    <div class="list-pick">${lists.map(l=>`<label><input type="checkbox" data-pick="${l.id}" data-item="${esc(id)}" ${l.items.includes(id)?"checked":""}>${esc(l.name)}</label>`).join("")}</div>
+    <form class="newlist" id="sheetNewList" data-item="${esc(id)}"><input id="sheetListName" placeholder="قائمة جديدة" aria-label="اسم قائمة جديدة" maxlength="40"><button type="submit">+ إنشاء</button></form>
+    <div class="btns"><button type="button" class="btn sec" data-close="1">تم</button></div></div>`;
+}
+function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>el.hidden=true,1800)}
+function newList(name,item){name=(name||"").trim();if(!name)return null;const L={id:"l"+Date.now().toString(36),name,items:item?[item]:[]};lists.push(L);saveLists();return L}
+
+/* ========== QURAN ========== */
+function quranBody(){
+  return `<div class="view">
+    <div><p class="label">اختر القارئ</p><div class="reciters">${RECITERS.map(r=>`<button type="button" class="rc" data-rec="${r.id}" aria-pressed="${r.id===reciter}"><span class="av">${r.name[0]}</span><span class="t">${r.name}</span></button>`).join("")}</div></div>
+    <div class="toolbar"><label class="search">${I.search}<input id="sq" type="search" placeholder="اسم السورة أو رقمها" aria-label="بحث في السور" value="${esc(surahQ)}"></label>
+    <div class="chips">${[["all","الكل"],["m","مكية"],["d","مدنية"]].map(([v,t])=>`<button type="button" class="chip" data-tf="${v}" aria-pressed="${typeF===v}">${t}</button>`).join("")}</div></div>
+    <div class="surahs" id="surahs"></div><div class="empty" id="noRes" hidden>لا توجد سورة بهذا الاسم.</div></div>`;
+}
+function visibleSurahs(){const nq=norm(surahQ);return SURAHS.filter(s=>(typeF==="all"||s.type===typeF)&&(!nq||norm(s.name).includes(nq)||String(s.n)===nq))}
+function surahRow(s,rid){
+  rid=rid||reciter;const key="s:"+rid+":"+s.n,on=track&&track.key===key,r=RECITERS.find(x=>x.id===rid);
+  const inList=lists.some(l=>l.items.includes(key));
+  return `<div class="row${on?" playing":""}"><span class="num">${I.star}<span>${AR(s.n)}</span></span><div style="min-width:0"><div class="nm">${s.name}</div><div class="meta">${s.type==="m"?"مكية":"مدنية"} · ${AR(s.ayat)} آية${rid!==reciter?" · "+r.name:""}</div></div><button type="button" class="icon-btn${inList?" on":""}" data-addlist="${key}" aria-label="أضف إلى قائمة">${I.plus}</button><button type="button" class="play" data-play="${key}" aria-label="تشغيل سورة ${s.name}">${on&&playing?I.pause:I.play}</button></div>`;
+}
+function renderSurahs(){const el=$("surahs");if(!el)return;const v=visibleSurahs();el.innerHTML=v.map(s=>surahRow(s)).join("");el.hidden=!v.length;$("noRes").hidden=!!v.length}
+
+function trackInfo(key){const[,rid,n]=key.split(":"),s=SURAHS[+n-1],r=RECITERS.find(x=>x.id===rid);return{key,rid,n:+n,title:"سورة "+s.name,sub:r.name+" · "+AR(s.ayat)+" آية",dur:s.ayat*r.pace+20,src:r.base+String(s.n).padStart(3,"0")+".mp3",page:"https://www.mp3quran.net/ar/"+r.slug+"/"+s.n}}
+function setPP(){$("ppIco").outerHTML=(playing?I.pause:I.play).replace('class="ico"','class="ico" id="ppIco"');$("pp").setAttribute("aria-label",playing?"إيقاف مؤقت":"تشغيل")}
+function paint(){$("cur").textContent=fmt(pos);$("dur").textContent=fmt(dur);$("seek").value=dur?pos/dur*100:0}
+function savePos(){if(!track||!pos)return;qpos={r:track.rid,n:track.n,pos,at:Date.now()};store.set("qpos",qpos)}
+function load(key,autoplay=true,startAt=0){
+  stop();if(verseAudio&&!verseAudio.paused)verseAudio.pause();
+  track=trackInfo(key);pos=startAt;dur=track.dur;$("player").hidden=false;
+  $("npT").textContent=track.title;$("npS").textContent=track.sub;$("npLink").href=track.page;$("npErr").hidden=true;
+  const a=new Audio();audio=a;a.preload="none";a.playbackRate=speed;
+  a.addEventListener("error",()=>{if(audio!==a)return;playing=false;$("npErr").hidden=false;setPP();refreshRows()});
+  a.addEventListener("loadedmetadata",()=>{dur=a.duration||dur;if(startAt)a.currentTime=startAt;paint()});
+  a.addEventListener("timeupdate",()=>{if(audio!==a)return;pos=a.currentTime;paint();if(++saveTick%8===0)savePos()});
+  a.addEventListener("ended",ended);
+  a.src=track.src;paint();if(autoplay)play();else{setPP();refreshRows()}
+}
+function play(){if(!audio)return;playing=true;audio.play().catch(()=>{playing=false;$("npErr").hidden=false;setPP();refreshRows()});setPP();refreshRows()}
+function pause(){playing=false;audio&&audio.pause();savePos();setPP();refreshRows()}
+function stop(){if(audio){audio.pause();audio=null}playing=false}
+function step(d){if(!track)return;const n=track.n+d;if(n>=1&&n<=114)load("s:"+track.rid+":"+n)}
+function ended(){if(repeat){audio.currentTime=0;audio.play();return}step(1)}
+function refreshRows(){if(view==="quran")renderSurahs();else if(view==="search"){const r=$("results");if(r)r.innerHTML=searchResults()}else if(view.startsWith("list-"))render()}
+$("pp").onclick=()=>playing?pause():play();
+$("next").onclick=()=>step(1);$("prev").onclick=()=>step(-1);
+$("rep").onclick=()=>{repeat=!repeat;$("rep").classList.toggle("on",repeat);$("rep").setAttribute("aria-pressed",repeat)};
+$("spd").onclick=()=>{const v=[1,1.25,1.5,0.75];speed=v[(v.indexOf(speed)+1)%v.length];$("spd").textContent=speed+"×";audio&&(audio.playbackRate=speed)};
+$("seek").addEventListener("input",e=>{pos=e.target.value/100*dur;if(audio)audio.currentTime=pos;paint()});
+addEventListener("pagehide",savePos);
+
+/* opening verse — plays on the first touch of the home page */
+function verseSrc(v){return "https://everyayah.com/data/Alafasy_128kbps/"+String(v.s).padStart(3,"0")+String(v.a).padStart(3,"0")+".mp3"}
+function setVL(t){const l=$("verseLbl");if(l)l.textContent=t}
+function toggleVerse(){
+  if(!verseAudio){verseAudio=new Audio(verseSrc(verse));verseAudio.addEventListener("ended",()=>setVL("استمع مرة أخرى"));verseAudio.addEventListener("error",()=>setVL("تعذّر التشغيل هنا"))}
+  if(verseAudio.paused){verseAudio.play().then(()=>setVL("إيقاف")).catch(()=>setVL("تعذّر التشغيل هنا"))}else{verseAudio.pause();setVL("استمع")}
+}
+document.addEventListener("pointerdown",e=>{if(verseTried||view!=="home")return;verseTried=true;if(e.target.closest("#verseBtn")||playing)return;toggleVerse()},{capture:true});
+
+/* ========== EVENTS ========== */
+document.addEventListener("click",e=>{
+  const t=e.target;
+  if(t.closest("[data-close]")){closeSheet();render();return}
+  const g=t.closest("[data-go]");if(g){go(g.dataset.go);return}
+  if(t.closest("#verseBtn")){toggleVerse();return}
+  const pl=t.closest("[data-play]");if(pl){const k=pl.dataset.play;if(track&&track.key===k)playing?pause():play();else load(k);return}
+  if(t.closest("[data-resume]")&&qpos){load("s:"+qpos.r+":"+qpos.n,true,qpos.pos);return}
+  const mk=t.closest("[data-mark]");if(mk){openMarkSheet(mk.dataset.mark);return}
+  const um=t.closest("[data-unmark]");if(um){delete marks[um.dataset.unmark];saveMarks();closeSheet();render();toast("أُزيلت العلامة");return}
+  const al=t.closest("[data-addlist]");if(al){openListSheet(al.dataset.addlist);return}
+  const rc=t.closest("[data-rec]");if(rc){reciter=rc.dataset.rec;store.set("rec",reciter);document.querySelectorAll(".rc").forEach(b=>b.setAttribute("aria-pressed",b===rc));renderSurahs();return}
+  const tf=t.closest("[data-tf]");if(tf){typeF=tf.dataset.tf;document.querySelectorAll("[data-tf]").forEach(b=>b.setAttribute("aria-pressed",b===tf));renderSurahs();return}
+  const qf=t.closest("[data-qf]");if(qf){qFilter=qf.dataset.qf;document.querySelectorAll("[data-qf]").forEach(b=>b.setAttribute("aria-pressed",b===qf));$("results").innerHTML=searchResults();return}
+  const dl=t.closest("[data-dellist]");if(dl){if(dl.dataset.confirm){lists=lists.filter(l=>l.id!==dl.dataset.dellist);saveLists();go("mine");toast("حُذفت القائمة")}else{dl.dataset.confirm="1";dl.textContent="اضغط مرة أخرى للتأكيد"}return}
+});
+document.addEventListener("change",e=>{
+  const p=e.target.closest("[data-pick]");if(!p)return;
+  const L=lists.find(l=>l.id===p.dataset.pick),id=p.dataset.item;if(!L)return;
+  if(p.checked){if(!L.items.includes(id))L.items.push(id)}else L.items=L.items.filter(x=>x!==id);
+  saveLists();toast(p.checked?"أُضيفت إلى «"+L.name+"»":"أُزيلت من «"+L.name+"»");
+});
+document.addEventListener("input",e=>{
+  if(e.target.id==="sq"){surahQ=e.target.value.trim();renderSurahs()}
+  else if(e.target.id==="homeQ"&&view==="search"){query=e.target.value.trim();clearTimeout(window._sq);window._sq=setTimeout(()=>{const r=$("results");if(r)r.innerHTML=searchResults()},200)}
+});
+document.addEventListener("submit",e=>{
+  e.preventDefault();const f=e.target;
+  if(f.id==="homeSearch"){query=$("homeQ").value.trim();if(view==="search"){$("results").innerHTML=searchResults()}else if(query)go("search");return}
+  if(f.id==="markForm"){const id=f.dataset.id,it=ITEM[id],note=($("mkNote").value||"").trim(),m={note,at:Date.now()};
+    if(it.lib==="r"){m.page=($("mkPage").value||"").trim();if(!m.page&&!note){toast("اكتب رقم الصفحة أو ملاحظة");return}}
+    else{m.t=($("mkTime").value||"").trim();if(!m.t&&!note){toast("اكتب الدقيقة أو ملاحظة");return}}
+    marks[id]=m;saveMarks();closeSheet();render();toast("حُفظت العلامة");return}
+  if(f.id==="newListForm"){const L=newList($("newListName").value);if(L){render();toast("أُنشئت «"+L.name+"»")}return}
+  if(f.id==="sheetNewList"){const id=f.dataset.item,L=newList($("sheetListName").value,id);if(L){openListSheet(id);toast("أُضيفت إلى «"+L.name+"»")}return}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("sheetHost").innerHTML){closeSheet();render()}});
+
+/* theme */
+const root=document.documentElement;
+const savedTheme=store.get("theme",null);if(savedTheme)root.setAttribute("data-theme",savedTheme);
+function curDark(){const t=root.getAttribute("data-theme");return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
+$("themeBtn").onclick=()=>{const d=!curDark();root.setAttribute("data-theme",d?"dark":"light");store.set("theme",d?"dark":"light")};
+
+/* star field behind the verse */
+function drawPattern(){
+  const c=$("pattern");if(!c)return;const r=c.getBoundingClientRect(),dpr=devicePixelRatio||1;c.width=r.width*dpr;c.height=r.height*dpr;
+  const x=c.getContext("2d");x.scale(dpr,dpr);x.strokeStyle="#D8AA4E";x.lineWidth=1;const s=56;
+  for(let i=-1;i*s<r.width+s;i++)for(let j=-1;j*s<r.height+s;j++){const cx=i*s+s/2,cy=j*s+s/2,h=s*0.36;x.strokeRect(cx-h,cy-h,h*2,h*2);x.save();x.translate(cx,cy);x.rotate(Math.PI/4);x.strokeRect(-h,-h,h*2,h*2);x.restore()}
+}
+addEventListener("resize",()=>{if(view==="home")drawPattern()});
+
+render();
+</script>
+
+</body></html>
